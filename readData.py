@@ -1,7 +1,7 @@
 # import pandas library
 import pandas as pd
 
-# read data to 'data' dataframe
+# read the file and store it in 'file' dataframe
 file = pd.read_csv('PES2015.txt', header=None)
 
 # create empty 'df' dataframe
@@ -16,7 +16,7 @@ df['Color'] = file[0].str[32:33]
 df['Income'] = file[0].str[326:338]
 df['Years_of_study'] = file[0].str[702:704]
 
-# create 'data' dataframe only with registers from heads of residences
+# create 'data' dataframe only with registers from people of reference
 data = df.loc[df['Status_in_residence']=='1']
 
 # drop 'Status_in_residence' column since we are considering only one value
