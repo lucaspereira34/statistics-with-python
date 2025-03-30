@@ -8,7 +8,13 @@ Data source: https://www.ibge.gov.br/estatisticas/sociais/trabalho/9127-pesquisa
 
 Following the data source link above, you should go to "microdados" and download the files in "2015" folder. The dataset we want to study is "PES2015.txt" in "Dados_20170517.zip" file. The data dictionary is "Dicionário de variáveis de pessoas - PNAD 2015.xlsx" in "Dicionarios_e_input_20170517.zip".
 
-# Managing the dataset
+## Table of Contents
+
+- [Data Wrangling](#data-wrangling)
+- [General Statistics](#general-statistics)
+- [Hypotesis Testing](#hypothesis-testing)
+
+# Data Wrangling
 
 After downloading the files, we have all the data from the research in a raw format. In the next steps, we'll show how to handle this data. 
 
@@ -20,18 +26,6 @@ The first step is to select what information we want.
 
 In this project, we'll focus on the income of people of reference in brazilian residences. It's recommended to select a group of categorical variables to enrich our analysis. 
 
-After checking the data dictionary, we selected the following variables:
-
-- Federal Unit (_Unidade da Federação_)
-- Gender (_Sexo_)
-- Age (_Idade_)
-- Status in the residence (_Condição no domicílio_) - **_this variable is needed to filter only registers from the people of reference._**
-- Color (_Cor ou raça_)
-- Monthly income in cash (_Rendimento mensal em dinheiro_)
-- Years of study (_Anos de estudo_)
-
-## Storing the dataset
-
 To store the dataset, we'll use _DataFrame_ structure from pandas library.
 
 ~~~python
@@ -41,8 +35,6 @@ import pandas as pd
 # read the file and store it in 'file' dataframe
 file = pd.read_csv('PES2015.txt', header=None)
 ~~~
-
-The dataset file "PES2015.txt" is too large for github, so you have to download it from the data source link and store it in your local repository.
 
 ## Creating column variables
 
@@ -82,7 +74,7 @@ Now that we have our variables separated by columns, the next step is to applica
 
 We'll store the manipulated data in a new dataset named _data_.
 
-### Considering only registers from people of reference
+### Status in Residence
 
 According to the data dictionary, these are the possible values for the _Status_in_residence_ variable:
 
@@ -106,3 +98,34 @@ data = df.loc[df['Status_in_residence']=='1']
 # drop 'Status_in_residence' column
 data = data.drop(columns='Status_in_residence')
 ~~~
+
+### Income and Age
+
+~~~python
+# drop invalids 'Income' values
+data = data.loc[(data['Income']!='999999999999') & (data['Income']!='            ')]
+
+# convert numeric data to numeric format
+data['Income'] = pd.to_numeric(data['Income'])
+data['Age'] = pd.to_numeric(data['Age'])
+~~~
+
+### Export file
+
+~~~python
+# create .csv file with 'data' dataframe
+data.to_csv('data.csv', index=False)
+~~~
+
+# General Statistics
+
+~~~python
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+~~~
+
+
+
+
